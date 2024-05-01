@@ -1,0 +1,20 @@
+name: 'OpenTofu setup and plan'
+description: 'Setup OpenTofu and run OpenTofu plan.'
+on:
+  pull_request: 
+    types: [opened, synchronize, reopened]
+jobs: 
+    opentofu-setup-and-plan:
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Checkout Code 
+        uses: actions/checkout@v4
+      - name: Setup OpenTofu 
+        uses: opentofu/setup-opentofu@v1
+      - name: OpenTofu fmt
+        run: tofu fmt -check
+      - name: OpenTofu plan
+        run: tofu plan --var-file=env/dev/dev.tfvars
+
+

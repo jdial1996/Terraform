@@ -55,51 +55,51 @@ variable "kubernetes_version" {
 
 variable "cluster_log_types" {
   description = "The desired controlplane logging to enable.  Valid values: api | audit | authenticator | scheduler | controller-manager"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "cluster_authentication_mode" {
   description = "The cluster authentication mode for IAM principles."
-  type = string
+  type        = string
 }
 
 variable "bootstrap_cluster_creator_admin_permissions" {
   description = "Enable automatic grant of cluster-admin-creator to IAM entity that created the cluster"
-  type = bool 
+  type        = bool
 }
 
 variable "max_nodes" {
   description = "The maximum number of nodes in the default nodegroup"
-  type = number
+  type        = number
 }
 
 variable "min_nodes" {
   description = "The minimum number of nodes in the default nodegroup"
-  type = number
+  type        = number
 }
 
 variable "desired_nodes" {
   description = "The desired number of nodes in the default nodegroup"
-  type = number
+  type        = number
 }
 
 variable "enable_managed_nodegroups" {
   description = "Feature switch for managed nodegroups"
-  type = bool 
+  type        = bool
 }
 
 variable "nodegroups" {
   description = "The eks cluster nodegroup configurations"
-  type = map(any)
+  type        = map(any)
 }
 
 variable "enable_eks_fargate_profiles" {
   description = "Feature switch for managed nodegroups"
-  type = bool 
+  type        = bool
 }
 
 variable "eks_fargate_profiles" {
   description = "The eks cluster nodegroup configurations"
-  type = map(any)
+  type        = map(any)
 }
 
