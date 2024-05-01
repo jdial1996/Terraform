@@ -14,6 +14,6 @@ jobs:
       - name: OpenTofu fmt
         run: tofu fmt -check
       - name: OpenTofu plan
-        run: cd eks && tofu plan --var-file=eks/env/dev/dev.tfvars
+        run: cd eks && tofu plan --var-file=env/dev/dev.tfvars
 
 
