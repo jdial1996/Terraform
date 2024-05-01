@@ -5,10 +5,18 @@ on:
 jobs: 
     opentofu-setup-and-plan:
       runs-on: ubuntu-latest
-
+      permissions:
+        id-token: write
+        contents: read
       steps:
       - name: Checkout Code 
         uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-2
+          role-to-assume: arn:aws:iam::590183739523:role/opentofu-role
+          role-session-name: GitHubActionsOpenTofuSession
       - name: Setup OpenTofu 
         uses: opentofu/setup-opentofu@v1
       - run: cd eks && tofu init
