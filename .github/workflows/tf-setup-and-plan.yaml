@@ -17,6 +17,8 @@ jobs:
           aws-region: eu-west-2
           role-to-assume: arn:aws:iam::590183739523:role/opentofu-role
           role-session-name: GitHubActionsOpenTofuSession
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
       - name: Setup OpenTofu 
         uses: opentofu/setup-opentofu@v1
       - run: cd eks && tofu init
