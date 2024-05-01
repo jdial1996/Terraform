@@ -1,5 +1,4 @@
 name: 'OpenTofu setup and plan'
-description: 'Setup OpenTofu and run OpenTofu plan.'
 on:
   pull_request: 
     types: [opened, synchronize, reopened]
