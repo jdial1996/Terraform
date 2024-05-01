@@ -9,9 +9,9 @@ jobs:
       steps:
       - name: Checkout Code 
         uses: actions/checkout@v4
-      - run: tofu init
       - name: Setup OpenTofu 
         uses: opentofu/setup-opentofu@v1
+      - run: tofu init
       - name: OpenTofu fmt
         run: tofu fmt -check
       - name: OpenTofu plan
