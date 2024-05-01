@@ -69,7 +69,7 @@ resource "aws_eks_node_group" "nodegroup" {
 
   # create labels and taints for your pods here 
   labels = {
-    role = "general"
+    role = "General"
   }
 }
 
