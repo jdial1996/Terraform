@@ -18,8 +18,9 @@ resource "aws_subnet" "public" {
   cidr_block        = each.value
 
   tags = {
-    Name                     = "public-${each.key}"
-    "kubernetes.io/role/elb" = 1
+    Name                                        = "public-${each.key}"
+    "kubernetes.io/role/elb"                    = 1
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -31,8 +32,9 @@ resource "aws_subnet" "private" {
   cidr_block        = each.value
 
   tags = {
-    Name                              = "private-${each.key}"
-    "kubernetes.io/role/internal-elb" = 1
+    Name                                        = "private-${each.key}"
+    "kubernetes.io/role/internal-elb"           = 1
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -43,7 +45,7 @@ resource "aws_eip" "nat_eip" {
 # TODO: If prod, create a nat gateway in each AZ, if not just create a single nat gateway 
 
 resource "aws_nat_gateway" "ngw" {
-  subnet_id     = aws_subnet.private["eu-west-2a"].id
+  subnet_id     = aws_subnet.public["eu-west-2a"].id
   allocation_id = aws_eip.nat_eip.id
   tags = {
     Environment = var.environment
