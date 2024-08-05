@@ -45,13 +45,13 @@ resource "aws_iam_role_policy_attachment" "eks-worker-node-logs-policy" {
 
 
 resource "aws_eks_node_group" "nodegroup" {
-  for_each = var.enable_managed_nodegroups ? var.nodegroups: {}
-  cluster_name  = aws_eks_cluster.eks-cluster.name
+  for_each        = var.enable_managed_nodegroups ? var.nodegroups : {}
+  cluster_name    = aws_eks_cluster.eks-cluster.name
   node_group_name = each.key
-  version = var.kubernetes_version
-  node_role_arn = aws_iam_role.nodegroup_role.arn #
+  version         = var.kubernetes_version
+  node_role_arn   = aws_iam_role.nodegroup_role.arn #
 
-  subnet_ids = values(aws_subnet.private)[*].id
+  subnet_ids     = values(aws_subnet.private)[*].id
   instance_types = [each.value.instance_type]
 
   capacity_type = each.value.capacity_type
@@ -71,11 +71,18 @@ resource "aws_eks_node_group" "nodegroup" {
   labels = {
     role = "general"
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-nodegroup-policy,
+    aws_iam_role_policy_attachment.eks-worker-node-cni-policy,
+    aws_iam_role_policy_attachment.eks-worker-node-ecr-policy
+
+  ]
 }
 
 # Lets you specify which pods will be hosted on fargate
 resource "aws_eks_fargate_profile" "fargate_profile" {
-  for_each = var.enable_eks_fargate_profiles ? var.eks_fargate_profiles : {}
+  for_each               = var.enable_eks_fargate_profiles ? var.eks_fargate_profiles : {}
   cluster_name           = aws_eks_cluster.eks-cluster.name
   fargate_profile_name   = each.key
   pod_execution_role_arn = aws_iam_role.nodegroup_role.arn

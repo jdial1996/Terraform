@@ -26,32 +26,38 @@ resource "aws_iam_role_policy_attachment" "eks-cluster-policy" {
 # vpc_config.subnet_ids controls which subnets the eks control plane enis are placed in
 
 resource "aws_eks_cluster" "eks-cluster" {
-    name = "${var.project}-${terraform.workspace}-cluster"
-    role_arn = aws_iam_role.eks-cluster-role.arn
-    version = var.kubernetes_version
-    enabled_cluster_log_types = var.cluster_log_types
+  name                      = var.cluster_name
+  role_arn                  = aws_iam_role.eks-cluster-role.arn
+  version                   = var.kubernetes_version
+  enabled_cluster_log_types = var.cluster_log_types
 
-    # dynamic_block ?
-    vpc_config {
-        subnet_ids = tolist([for subnet in aws_subnet.private : subnet.id])
-        endpoint_private_access = var.enable_endpoint_private_access ? true: false 
-        endpoint_public_access = var.enable_endpoint_private_access ? false: true
-        
-    }
+  vpc_config {
+    subnet_ids              = tolist([for subnet in aws_subnet.private : subnet.id])
+    endpoint_private_access = var.enable_endpoint_private_access ? true : false
+    endpoint_public_access  = var.enable_endpoint_private_access ? false : true
 
-    access_config {
-        authentication_mode = var.cluster_authentication_mode
-        bootstrap_cluster_creator_admin_permissions = var.bootstrap_cluster_creator_admin_permissions
-    }
-    # # Encrypt secrets at rest inside EKS with KMS
-    # encryption_config {
-    #     provider = 
-    #     resources = "secret"
-    # }
+  }
 
-    depends_on = [aws_iam_role_policy_attachment.eks-cluster-policy]
+  access_config {
+    authentication_mode                         = var.cluster_authentication_mode
+    bootstrap_cluster_creator_admin_permissions = var.bootstrap_cluster_creator_admin_permissions
+  }
+  # # Encrypt secrets at rest inside EKS with KMS
+  # encryption_config {
+  #     provider = 
+  #     resources = "secret"
+  # }
+
+  depends_on = [aws_iam_role_policy_attachment.eks-cluster-policy]
 }
 
-output "environment" {
-    value = terraform.workspace
+
+## Addons 
+
+resource "aws_eks_addon" "pod-identity" {
+  cluster_name  = aws_eks_cluster.eks-cluster.name
+  addon_name    = "eks-pod-identity-agent"
+  addon_version = var.pod_identity_addon_version
+
 }
+

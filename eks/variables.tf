@@ -1,5 +1,7 @@
+## Project
+
 variable "environment" {
-  description = "The project nvironment."
+  description = "The project environment."
   type        = string
 }
 
@@ -8,27 +10,25 @@ variable "project" {
   type        = string
 }
 
+variable "region" {
+  description = "The region to deploy AWS Resources into."
+  type        = string
+}
+## Network
+
 variable "vpc_cidr" {
   description = "The CIDR block for the EKS Cluster VPC"
   type        = string
 }
 
 variable "public_subnet_cidrs" {
-  type = map(any)
-  default = {
-    eu-west-2a : "10.0.101.0/24",
-    eu-west-2b : "10.0.102.0/24",
-    eu-west-2c : "10.0.103.0/24"
-  }
+  type        = map(any)
+  description = "The network CIDRs assigned to public subnets"
 }
 
 variable "private_subnet_cidrs" {
-  type = map(any)
-  default = {
-    eu-west-2a : "10.0.104.0/24",
-    eu-west-2b : "10.0.105.0/24",
-    eu-west-2c : "10.0.106.0/24"
-  }
+  type        = map(any)
+  description = "The network CIDRs assigned to private subnets"
 }
 
 variable "enable_dns_hostnames" {
@@ -48,6 +48,13 @@ variable "enable_endpoint_private_access" {
   type        = bool
 }
 
+## Cluster
+
+variable "cluster_name" {
+  description = "The name of the EKS cluster."
+  type        = string
+}
+
 variable "kubernetes_version" {
   description = "The underlying version of Kubernetes for EKS"
   type        = string
@@ -55,51 +62,73 @@ variable "kubernetes_version" {
 
 variable "cluster_log_types" {
   description = "The desired controlplane logging to enable.  Valid values: api | audit | authenticator | scheduler | controller-manager"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "cluster_authentication_mode" {
   description = "The cluster authentication mode for IAM principles."
-  type = string
+  type        = string
 }
 
 variable "bootstrap_cluster_creator_admin_permissions" {
   description = "Enable automatic grant of cluster-admin-creator to IAM entity that created the cluster"
-  type = bool 
-}
-
-variable "max_nodes" {
-  description = "The maximum number of nodes in the default nodegroup"
-  type = number
-}
-
-variable "min_nodes" {
-  description = "The minimum number of nodes in the default nodegroup"
-  type = number
-}
-
-variable "desired_nodes" {
-  description = "The desired number of nodes in the default nodegroup"
-  type = number
+  type        = bool
 }
 
 variable "enable_managed_nodegroups" {
   description = "Feature switch for managed nodegroups"
-  type = bool 
+  type        = bool
 }
 
 variable "nodegroups" {
   description = "The eks cluster nodegroup configurations"
-  type = map(any)
+  type        = map(any)
 }
 
 variable "enable_eks_fargate_profiles" {
   description = "Feature switch for managed nodegroups"
-  type = bool 
+  type        = bool
 }
 
 variable "eks_fargate_profiles" {
   description = "The eks cluster nodegroup configurations"
-  type = map(any)
+  type        = map(any)
 }
 
+
+### RBAC 
+
+variable "create_read_only_user" {
+  description = "Create an EKS read only user."
+  type        = bool
+}
+
+variable "create_cluster_admin_user" {
+  description = "Create an EKS cluster admin user."
+  type        = bool
+}
+
+## AWS LB Controller
+
+
+variable "create_lb_controller" {
+  description = "Create AWS LB Controller for EKS."
+  type        = bool
+}
+
+variable "lb_controller_namespace" {
+  description = "The namespace to deploy the AWS LB Controller into."
+  type        = string
+}
+
+variable "lb_controller_service_account_name" {
+  description = "The AWS LB Controller Kubernetes service account name."
+  type        = string
+}
+
+#EKS Addons 
+
+variable "pod_identity_addon_version" {
+  description = "The version of the EKS pod identity addon."
+  type        = string
+}
