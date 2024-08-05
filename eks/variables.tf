@@ -126,6 +126,12 @@ variable "lb_controller_service_account_name" {
   type        = string
 }
 
+
+variable "lb_controller_version" {
+  description = "The Helm Chart version of the AWS LB Controller version to install."
+  type        = string
+}
+
 #EKS Addons 
 
 variable "pod_identity_addon_version" {

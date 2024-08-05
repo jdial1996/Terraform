@@ -61,3 +61,7 @@ lb_controller_service_account_name = "aws-load-balancer-controller"
 ## EKS Addons
 
 pod_identity_addon_version = "v1.3.0-eksbuild.1"
+
+## AWS LB Controller
+
+lb_controller_version = "1.8.1"
