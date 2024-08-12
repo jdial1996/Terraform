@@ -138,3 +138,14 @@ variable "pod_identity_addon_version" {
   description = "The version of the EKS pod identity addon."
   type        = string
 }
+
+variable "enable_ebs_csi_controller" {
+  description = "Feature switch for EBS CSI Controller"
+  type        = bool
+}
+
+variable "ebs_csi_driver_addon_version" {
+  description = "The version of the EBS CSI Controller addon."
+  type        = string
+  default = null 
+}
