@@ -62,7 +62,7 @@ resource "aws_eks_addon" "pod-identity" {
 
 resource "aws_eks_addon" "ebs-csi-driver" {
   count = var.enable_ebs_csi_controller ? 1 : 0 
-  cluster_name = module.eks-cluster.cluster_name
+  cluster_name = aws_eks_cluster.eks-cluster.name
   addon_name   = "aws-ebs-csi-driver"
   addon_version = var.ebs_csi_driver_addon_version
 }
