@@ -132,9 +132,51 @@ variable "lb_controller_version" {
   type        = string
 }
 
+## AWS Container Insights
+
+variable "enable_container_insights" {
+  description = "Feature switch for Container Insights"
+  type        = bool
+}
+
+variable "cloudwatch_agent_namespace" {
+  description = "The namespace to deploy the Cloudwatch Agent in."
+  type        = bool
+}
+
+variable "cloudwatch_agent_service_account_name" {
+  description = "The  CloudWatch Agent Kubernetes service account name."
+  type        = string
+}
+
 #EKS Addons 
 
 variable "pod_identity_addon_version" {
   description = "The version of the EKS pod identity addon."
   type        = string
+<<<<<<< Updated upstream
+=======
+}
+
+variable "enable_ebs_csi_controller" {
+  description = "Feature switch for EBS CSI Controller"
+  type        = bool
+}
+
+variable "ebs_csi_driver_addon_version" {
+  description = "The version of the EBS CSI Controller addon."
+  type        = string
+  default = null 
+}
+
+variable "enable_kubecost_addon" {
+  description = "Feature switch for Kubecost addon."
+  type        = bool
+}
+
+variable "kubecost_addon_version" {
+  description = "The version of the Kubecost addon."
+  type        = string
+  default = null 
+>>>>>>> Stashed changes
 }
