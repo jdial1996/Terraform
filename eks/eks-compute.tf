@@ -42,6 +42,11 @@ resource "aws_iam_role_policy_attachment" "eks-worker-node-logs-policy" {
   role       = aws_iam_role.nodegroup_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks-worker-node-ebs-csi-driver" {
+  count = var.enable_ebs_csi_controller ? 1 : 0 
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.nodegroup_role.name
+}
 
 
 resource "aws_eks_node_group" "nodegroup" {
