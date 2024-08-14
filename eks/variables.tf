@@ -132,7 +132,26 @@ variable "lb_controller_version" {
   type        = string
 }
 
-#EKS Addons 
+## AWS Container Insights
+
+variable "enable_container_insights" {
+  description = "Feature switch for Container Insights"
+  type        = bool
+}
+
+variable "cloudwatch_observability_namespace" {
+  description = "The namespace to deploy the Cloudwatch Agent in."
+  type        = bool
+  default = "amazon-cloudwatch"
+}
+
+variable "cloudwatch_observability_service_account_name" {
+  description = "The  CloudWatch Agent Kubernetes service account name."
+  type        = string
+  default = "cloudwatch-agent"
+}
+
+## EKS Addons 
 
 variable "pod_identity_addon_version" {
   description = "The version of the EKS pod identity addon."
@@ -146,6 +165,12 @@ variable "enable_ebs_csi_driver" {
 }
 
 variable "ebs_csi_driver_addon_version" {
+  description = "The version of the EBS CSI Driver addon."
+  type        = string
+  default = null 
+}
+
+variable "cloudwatch_observability_addon_version" {
   description = "The version of the EBS CSI Driver addon."
   type        = string
   default = null 
