@@ -66,3 +66,10 @@ resource "aws_eks_addon" "ebs-csi-driver" {
   addon_name   = "aws-ebs-csi-driver"
   addon_version = var.ebs_csi_driver_addon_version
 }
+
+resource "aws_eks_addon" "cloudwatch-observability" {
+  count = var.enable_container_insights ? 1 : 0 
+  cluster_name = aws_eks_cluster.eks-cluster.name
+  addon_name   = "amazon-cloudwatch-observability"
+  addon_version = var.cloudwatch_observability_addon_version
+}

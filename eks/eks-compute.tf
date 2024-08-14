@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "eks-worker-node-logs-policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks-worker-node-ebs-csi-driver" {
-  count = var.enable_ebs_csi_controller ? 1 : 0 
+  count = var.enable_ebs_csi_driver ? 1 : 0 
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.nodegroup_role.name
 }
@@ -80,7 +80,8 @@ resource "aws_eks_node_group" "nodegroup" {
   depends_on = [
     aws_iam_role_policy_attachment.eks-nodegroup-policy,
     aws_iam_role_policy_attachment.eks-worker-node-cni-policy,
-    aws_iam_role_policy_attachment.eks-worker-node-ecr-policy
+    aws_iam_role_policy_attachment.eks-worker-node-ecr-policy,
+    aws_eks_pod_identity_association.cloudwatch_agent_pod_identity
 
   ]
 }
