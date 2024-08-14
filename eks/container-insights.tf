@@ -29,5 +29,3 @@ resource "aws_eks_pod_identity_association" "cloudwatch_agent_pod_identity" {
   service_account = var.cloudwatch_observability_service_account_name
   role_arn        = aws_iam_role.cloudwatch_agent_role[0].arn
 }
-
-v1.10.0-eksbuild.2
