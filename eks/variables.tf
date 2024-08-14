@@ -141,7 +141,7 @@ variable "enable_container_insights" {
 
 variable "cloudwatch_observability_namespace" {
   description = "The namespace to deploy the Cloudwatch Agent in."
-  type        = bool
+  type        = string
   default = "amazon-cloudwatch"
 }
 
