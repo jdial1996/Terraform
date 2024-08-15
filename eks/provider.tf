@@ -17,8 +17,20 @@ provider "aws" {
   }
 }
 
+# provider "helm" {
+#   kubernetes {
+#     config_path = "~/.kube/config"
+#   }
+# }
+
+
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    cluster_ca_certificate = base64decode(aws_eks_cluster.eks-cluster.certificate_authority.data)
+    host = aws_eks_clster.aws_eks_cluster.endpoint
   }
+}
+
+output "test" {
+  value = base64decode(aws_eks_cluster.eks-cluster.certificate_authority.data)
 }
