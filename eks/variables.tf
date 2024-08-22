@@ -151,6 +151,28 @@ variable "cloudwatch_observability_service_account_name" {
   default = "cloudwatch-agent"
 }
 
+## Karpenter
+
+variable "enable_karpenter" {
+  description = "Feature switch for Karpenter"
+  type        = bool
+}
+
+variable "karpenter_version" {
+  description = "The Helm Chart version of Karpenter to install."
+  type        = string
+}
+
+variable "karpenter_namespace" {
+  description = "The namespace to deploy Karpenter in."
+  type        = string
+}
+
+variable "karpenter_service_account_name" {
+  description = "The name of the Karpenter service account."
+  type        = string
+}
+
 ## EKS Addons 
 
 variable "pod_identity_addon_version" {

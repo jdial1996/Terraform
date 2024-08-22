@@ -17,20 +17,27 @@ provider "aws" {
   }
 }
 
-# provider "helm" {
-#   kubernetes {
-#     config_path = "~/.kube/config"
-#   }
-# }
-
-
 provider "helm" {
   kubernetes {
-    cluster_ca_certificate = base64decode(aws_eks_cluster.eks-cluster.certificate_authority.data)
-    host = aws_eks_clster.aws_eks_cluster.endpoint
+    cluster_ca_certificate = base64decode(aws_eks_cluster.eks-cluster.certificate_authority[0].data)
+    host = aws_eks_cluster.eks-cluster.endpoint
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command = "aws"
+      args = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks-cluster.id]
+    }
   }
 }
+# Required for NodeTemplate and Nodepool
 
-output "test" {
-  value = base64decode(aws_eks_cluster.eks-cluster.certificate_authority.data)
+
+provider "kubernetes" {
+  host                   = aws_eks_cluster.eks-cluster.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.eks-cluster.certificate_authority[0].data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks-cluster.id]
+    command     = "aws"
+  }
 }
