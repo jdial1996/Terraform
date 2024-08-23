@@ -199,6 +199,27 @@ variable "metrics_server_version" {
   type        = string
 }
 
+
+## ArgoCD
+
+variable "enable_argocd" {
+  description = "Feature switch for the Argo CD"
+  type        = bool
+  default     = true
+}
+
+variable "argocd_namespace" {
+  description = "The namespace to deploy the Argo CD in."
+  type        = string
+  default     = "argocd"
+}
+
+variable "argocd_version" {
+  description = "The version of the Argo CD Helm Chart"
+  type        = string
+}
+
+
 ## EKS Addons 
 
 variable "pod_identity_addon_version" {
