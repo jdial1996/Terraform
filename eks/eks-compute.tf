@@ -43,12 +43,12 @@ resource "aws_iam_role_policy_attachment" "eks-worker-node-logs-policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "eks-worker-node-ebs-csi-driver" {
-  count = var.enable_ebs_csi_driver ? 1 : 0 
+  count      = var.enable_ebs_csi_driver ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.nodegroup_role.name
 }
 
-
+## Managed NodeGroup
 resource "aws_eks_node_group" "nodegroup" {
   for_each        = var.enable_managed_nodegroups ? var.nodegroups : {}
   cluster_name    = aws_eks_cluster.eks-cluster.name
@@ -84,6 +84,43 @@ resource "aws_eks_node_group" "nodegroup" {
     aws_eks_pod_identity_association.cloudwatch_agent_pod_identity
 
   ]
+}
+
+resource "aws_eks_node_group" "karpenter_nodegroup" {
+  count           = var.enable_karpenter ? 1 : 0
+  cluster_name    = aws_eks_cluster.eks-cluster.name
+  node_group_name = "karpenter-nodegroup"
+  version         = var.kubernetes_version
+  node_role_arn   = aws_iam_role.nodegroup_role.arn
+  subnet_ids      = values(aws_subnet.private)[*].id
+  instance_types  = ["t3.medium"]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 1
+    min_size     = 1
+  }
+
+  capacity_type = "ON_DEMAND"
+
+  # update_config {
+  #   # desired number of unavailable nodes during nodegroup updates
+  #   max_unavailable = each.value.max_unavailable_nodes
+  # }
+
+  # create labels and taints for your pods here 
+  labels = {
+    role = "karpenter"
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks-nodegroup-policy,
+    aws_iam_role_policy_attachment.eks-worker-node-cni-policy,
+    aws_iam_role_policy_attachment.eks-worker-node-ecr-policy,
+    aws_eks_pod_identity_association.cloudwatch_agent_pod_identity
+
+  ]
+
 }
 
 # Lets you specify which pods will be hosted on fargate

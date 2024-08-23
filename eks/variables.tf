@@ -142,13 +142,41 @@ variable "enable_container_insights" {
 variable "cloudwatch_observability_namespace" {
   description = "The namespace to deploy the Cloudwatch Agent in."
   type        = string
-  default = "amazon-cloudwatch"
+  default     = "amazon-cloudwatch"
 }
 
 variable "cloudwatch_observability_service_account_name" {
   description = "The  CloudWatch Agent Kubernetes service account name."
   type        = string
-  default = "cloudwatch-agent"
+  default     = "cloudwatch-agent"
+}
+
+## Karpenter
+
+variable "enable_karpenter" {
+  description = "Feature switch for Karpenter"
+  type        = bool
+}
+
+variable "karpenter_version" {
+  description = "The Helm Chart version of Karpenter to install."
+  type        = string
+}
+
+variable "karpenter_namespace" {
+  description = "The namespace to deploy Karpenter in."
+  type        = string
+}
+
+variable "karpenter_service_account_name" {
+  description = "The name of the Karpenter service account."
+  type        = string
+}
+
+variable "karpenter_acceptable_instance_types" {
+  description = "The EC2 instance types that Karpenter is allowed to provision"
+  type        = list(string)
+  default     = ["t2.small", "t3.small", "t2.micro"]
 }
 
 ## EKS Addons 
@@ -161,17 +189,17 @@ variable "pod_identity_addon_version" {
 variable "enable_ebs_csi_driver" {
   description = "Feature switch for EBS CSI Driver"
   type        = bool
-  default = false
+  default     = false
 }
 
 variable "ebs_csi_driver_addon_version" {
   description = "The version of the EBS CSI Driver addon."
   type        = string
-  default = null 
+  default     = null
 }
 
 variable "cloudwatch_observability_addon_version" {
   description = "The version of the EBS CSI Driver addon."
   type        = string
-  default = null 
+  default     = null
 }

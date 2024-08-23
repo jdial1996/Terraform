@@ -1,9 +1,14 @@
-output "eks_cluster_id" {
-  description = "EKS Cluster Id"
-  value       = aws_eks_cluster.eks-cluster.cluster_id
+output "eks_cluster_name" {
+  description = "EKS Cluster Name"
+  value       = aws_eks_cluster.eks-cluster.id
 }
 
-output "cluster_endpoint" {
+output "eks_cluster_name" {
+  description = "EKS Cluster ARN"
+  value       = aws_eks_cluster.eks-cluster.arn
+}
+
+output "eks_cluster_endpoint" {
   description = "Endpoint for EKS control plane."
   value       = aws_eks_cluster.eks-cluster.endpoint
 }
@@ -11,11 +16,6 @@ output "cluster_endpoint" {
 output "region" {
   description = "AWS region"
   value       = var.region
-}
-
-output "cluster_name" {
-  description = "EKS Cluster Name"
-  value       = var.cluster_name
 }
 
 output "k8s_admin_role_arn" {
