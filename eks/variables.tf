@@ -179,6 +179,26 @@ variable "karpenter_acceptable_instance_types" {
   default     = ["t2.small", "t3.small", "t2.micro"]
 }
 
+
+## Metrics Server for HPA
+
+variable "enable_metrics_server" {
+  description = "Feature switch for the Metrics Server"
+  type        = bool
+  default     = true
+}
+
+variable "metrics_server_namespace" {
+  description = "The namespace to deploy the Metrics Server in."
+  type        = string
+  default     = "kube-system"
+}
+
+variable "metrics_server_version" {
+  description = "The version of the Metrics Server Helm Chart"
+  type        = string
+}
+
 ## EKS Addons 
 
 variable "pod_identity_addon_version" {
