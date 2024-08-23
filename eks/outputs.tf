@@ -4,7 +4,7 @@ output "eks_cluster_name" {
 }
 
 output "eks_cluster_name" {
-  description = "EKS Cluster Name"
+  description = "EKS Cluster ARN"
   value       = aws_eks_cluster.eks-cluster.arn
 }
 

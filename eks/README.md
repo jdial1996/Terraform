@@ -74,13 +74,15 @@ No modules.
 | Name | Version |
 |------|---------|
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | 5.46.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | >= 1.7.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 5.46.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.14.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | n/a |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | >= 1.7.0 |
 
 ## Modules
 
@@ -90,6 +92,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_ec2_tag.karpenter_tag](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/ec2_tag) | resource |
 | [aws_eip.nat_eip](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eip) | resource |
 | [aws_eks_access_entry.cluster-admin-k8s](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_access_entry) | resource |
 | [aws_eks_access_entry.read_only](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_access_entry) | resource |
@@ -100,10 +103,12 @@ No modules.
 | [aws_eks_addon.pod-identity](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_addon) | resource |
 | [aws_eks_cluster.eks-cluster](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_cluster) | resource |
 | [aws_eks_fargate_profile.fargate_profile](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_fargate_profile) | resource |
+| [aws_eks_node_group.karpenter_nodegroup](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_node_group) | resource |
 | [aws_eks_node_group.nodegroup](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_node_group) | resource |
 | [aws_eks_pod_identity_association.cloudwatch_agent_pod_identity](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_pod_identity_association) | resource |
 | [aws_eks_pod_identity_association.karpenter_pod_identity](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_pod_identity_association) | resource |
 | [aws_eks_pod_identity_association.lb_controller_pod_identity](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/eks_pod_identity_association) | resource |
+| [aws_iam_instance_profile.karpenter_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.eks-describe-cluster](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.karpenter_policy](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.lb_controller_policy](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/iam_policy) | resource |
@@ -137,6 +142,8 @@ No modules.
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/vpc) | resource |
 | [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [kubectl_manifest.karpenter_ec2nodeclass](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
+| [kubectl_manifest.karpenter_nodepool](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.cloudwatch_agent_assume_role](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.eks-describe-cluster](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/data-sources/iam_policy_document) | data source |
@@ -168,7 +175,9 @@ No modules.
 | <a name="input_enable_karpenter"></a> [enable\_karpenter](#input\_enable\_karpenter) | Feature switch for Karpenter | `bool` | n/a | yes |
 | <a name="input_enable_managed_nodegroups"></a> [enable\_managed\_nodegroups](#input\_enable\_managed\_nodegroups) | Feature switch for managed nodegroups | `bool` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The project environment. | `string` | n/a | yes |
+| <a name="input_karpenter_acceptable_instance_types"></a> [karpenter\_acceptable\_instance\_types](#input\_karpenter\_acceptable\_instance\_types) | The EC2 instance types that Karpenter is allowed to provision | `list(string)` | <pre>[<br>  "t2.small",<br>  "t3.small",<br>  "t2.micro"<br>]</pre> | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | The namespace to deploy Karpenter in. | `string` | n/a | yes |
+| <a name="input_karpenter_service_account_name"></a> [karpenter\_service\_account\_name](#input\_karpenter\_service\_account\_name) | The name of the Karpenter service account. | `string` | n/a | yes |
 | <a name="input_karpenter_version"></a> [karpenter\_version](#input\_karpenter\_version) | The Helm Chart version of Karpenter to install. | `string` | n/a | yes |
 | <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | The underlying version of Kubernetes for EKS | `string` | n/a | yes |
 | <a name="input_lb_controller_namespace"></a> [lb\_controller\_namespace](#input\_lb\_controller\_namespace) | The namespace to deploy the AWS LB Controller into. | `string` | n/a | yes |
@@ -180,15 +189,14 @@ No modules.
 | <a name="input_project"></a> [project](#input\_project) | The name of the project. | `string` | n/a | yes |
 | <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | The network CIDRs assigned to public subnets | `map(any)` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The region to deploy AWS Resources into. | `string` | n/a | yes |
-| <a name="input_var.karpenter_service_account_name"></a> [var.karpenter\_service\_account\_name](#input\_var.karpenter\_service\_account\_name) | The name of the Karpenter service account. | `string` | n/a | yes |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | The CIDR block for the EKS Cluster VPC | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_cluster_endpoint"></a> [cluster\_endpoint](#output\_cluster\_endpoint) | Endpoint for EKS control plane. |
-| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS Cluster Name |
+| <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint for EKS control plane. |
+| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS Cluster ARN |
 | <a name="output_k8s_admin_role_arn"></a> [k8s\_admin\_role\_arn](#output\_k8s\_admin\_role\_arn) | Cluster admin role arn |
 | <a name="output_k8s_read_only_role_arn"></a> [k8s\_read\_only\_role\_arn](#output\_k8s\_read\_only\_role\_arn) | Cluster read-only role arn |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
