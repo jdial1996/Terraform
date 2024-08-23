@@ -182,16 +182,16 @@ variable "karpenter_acceptable_instance_types" {
 
 ## HPA 
 
-variable "enable_hpa"  {
-  description = "Feature switch for the Horizontal Pod Autoscaler"
-  type = bool 
-  default = true 
+variable "enable_metrics_server" {
+  description = "Feature switch for the Metrics Server"
+  type        = bool
+  default     = true
 }
 
-variable "hpa_namespace" {
-  description = "The namespae to deploy HPA resources in"
-  type = string 
-  default = "kube-system"
+variable "metrics_server_namespace" {
+  description = "The namespace to deploy the Metrics Server in."
+  type        = string
+  default     = "kube-system"
 }
 
 variable "metrics_server_version" {
