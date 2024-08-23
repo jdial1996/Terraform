@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "karpenter_policy" {
-  count = var.enable_karpenter ? 1 : 0
+  count       = var.enable_karpenter ? 1 : 0
   name        = "controller-policy"
   description = "IAM policy for Karpenter controller"
 
@@ -7,9 +7,9 @@ resource "aws_iam_policy" "karpenter_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "Karpenter"
-        Effect    = "Allow"
-        Action    = [
+        Sid    = "Karpenter"
+        Effect = "Allow"
+        Action = [
           "ssm:GetParameter",
           "ec2:DescribeImages",
           "ec2:RunInstances",
@@ -30,10 +30,10 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
       },
       {
-        Sid       = "ConditionalEC2Termination"
-        Effect    = "Allow"
-        Action    = "ec2:TerminateInstances"
-        Resource  = "*"
+        Sid      = "ConditionalEC2Termination"
+        Effect   = "Allow"
+        Action   = "ec2:TerminateInstances"
+        Resource = "*"
         Condition = {
           StringLike = {
             "ec2:ResourceTag/karpenter.sh/nodepool" = "*"
@@ -41,15 +41,15 @@ resource "aws_iam_policy" "karpenter_policy" {
         }
       },
       {
-        Sid    = "PassNodeIAMRole"
-        Effect = "Allow"
-        Action = "iam:PassRole"
+        Sid      = "PassNodeIAMRole"
+        Effect   = "Allow"
+        Action   = "iam:PassRole"
         Resource = "${aws_iam_role.nodegroup_role.arn}"
       },
       {
-        Sid    = "EKSClusterEndpointLookup"
-        Effect = "Allow"
-        Action = "eks:DescribeCluster"
+        Sid      = "EKSClusterEndpointLookup"
+        Effect   = "Allow"
+        Action   = "eks:DescribeCluster"
         Resource = "${aws_eks_cluster.eks-cluster.arn}"
       },
       {
@@ -59,8 +59,8 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
-            "aws:RequestTag/topology.kubernetes.io/region"                   = "${var.region}"
+            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}" = "owned",
+            "aws:RequestTag/topology.kubernetes.io/region"                           = "${var.region}"
           }
           StringLike = {
             "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass" = "*"
@@ -74,21 +74,21 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
-            "aws:ResourceTag/topology.kubernetes.io/region"                   = "${var.region}",
-            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"        = "owned",
-            "aws:RequestTag/topology.kubernetes.io/region"                    = "${var.region}"
+            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}" = "owned",
+            "aws:ResourceTag/topology.kubernetes.io/region"                           = "${var.region}",
+            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"  = "owned",
+            "aws:RequestTag/topology.kubernetes.io/region"                            = "${var.region}"
           }
           StringLike = {
-            "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass"                  = "*",
-            "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass"                   = "*"
+            "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass" = "*",
+            "aws:RequestTag/karpenter.k8s.aws/ec2nodeclass"  = "*"
           }
         }
       },
       {
-        Sid      = "AllowScopedInstanceProfileActions"
-        Effect   = "Allow"
-        Action   = [
+        Sid    = "AllowScopedInstanceProfileActions"
+        Effect = "Allow"
+        Action = [
           "iam:AddRoleToInstanceProfile",
           "iam:RemoveRoleFromInstanceProfile",
           "iam:DeleteInstanceProfile"
@@ -96,11 +96,11 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
-            "aws:ResourceTag/topology.kubernetes.io/region"                   = "${var.region}"
+            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}" = "owned",
+            "aws:ResourceTag/topology.kubernetes.io/region"                           = "${var.region}"
           }
           StringLike = {
-            "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass"                  = "*"
+            "aws:ResourceTag/karpenter.k8s.aws/ec2nodeclass" = "*"
           }
         }
       },
@@ -164,7 +164,7 @@ resource "aws_eks_pod_identity_association" "karpenter_pod_identity" {
 
 
 resource "aws_ec2_tag" "karpenter_tag" {
-  count = var.create_lb_controller ? 1 : 0
+  count       = var.create_lb_controller ? 1 : 0
   resource_id = aws_eks_cluster.eks-cluster.vpc_config[0].cluster_security_group_id
   key         = "karpenter.sh/discovery"
   value       = aws_eks_cluster.eks-cluster.id
@@ -172,7 +172,7 @@ resource "aws_ec2_tag" "karpenter_tag" {
 
 resource "aws_iam_instance_profile" "karpenter_instance_profile" {
   name = "karpenter-instance-profile"
-  role = aws_iam_role.nodegroup_role.name 
+  role = aws_iam_role.nodegroup_role.name
 }
 
 
@@ -180,10 +180,10 @@ resource "aws_iam_instance_profile" "karpenter_instance_profile" {
 
 
 resource "kubectl_manifest" "karpenter_nodepool" {
-  provider = "kubectl"
+  provider   = "kubectl"
   depends_on = [kubectl_manifest.karpenter_ec2nodeclass]
 
-  count           = var.enable_karpenter ? 1 : 0
+  count     = var.enable_karpenter ? 1 : 0
   yaml_body = <<YAML
 apiVersion: karpenter.sh/v1beta1
 kind: NodePool
@@ -216,9 +216,9 @@ YAML
 
 resource "kubectl_manifest" "karpenter_ec2nodeclass" {
   depends_on = [helm_release.karpenter]
-  provider = "kubectl"
-  count           = var.enable_karpenter ? 1 : 0
-  yaml_body = <<YAML
+  provider   = "kubectl"
+  count      = var.enable_karpenter ? 1 : 0
+  yaml_body  = <<YAML
 apiVersion: karpenter.k8s.aws/v1beta1
 kind: EC2NodeClass
 metadata:
@@ -239,7 +239,7 @@ YAML
 
 
 resource "helm_release" "karpenter" {
-  count           = var.enable_karpenter ? 1 : 0
+  count    = var.enable_karpenter ? 1 : 0
   provider = "helm"
   depends_on = [
     aws_eks_cluster.eks-cluster
@@ -251,14 +251,14 @@ resource "helm_release" "karpenter" {
   chart            = "karpenter"
   version          = var.karpenter_version
   create_namespace = true
-  wait = true ## wait until provisioner crd has been installed
+  wait             = true ## wait until provisioner crd has been installed
 
   set {
     name  = "settings.clusterName"
     value = aws_eks_cluster.eks-cluster.id
   }
   set {
-    name = "settings.clusterEndpoint"
+    name  = "settings.clusterEndpoint"
     value = aws_eks_cluster.eks-cluster.endpoint
   }
   set {

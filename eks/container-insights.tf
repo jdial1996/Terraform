@@ -16,9 +16,9 @@ data "aws_iam_policy_document" "cloudwatch_agent_assume_role" {
 }
 
 resource "aws_iam_role" "cloudwatch_agent_role" {
-  count              = var.enable_container_insights ? 1 : 0
-  name               = "cloudwatch-agent-role"
-  assume_role_policy = data.aws_iam_policy_document.cloudwatch_agent_assume_role[0].json
+  count               = var.enable_container_insights ? 1 : 0
+  name                = "cloudwatch-agent-role"
+  assume_role_policy  = data.aws_iam_policy_document.cloudwatch_agent_assume_role[0].json
   managed_policy_arns = ["arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"]
 }
 
