@@ -173,6 +173,12 @@ variable "karpenter_service_account_name" {
   type        = string
 }
 
+variable "karpenter_acceptable_instance_types" {
+  description = "The EC2 instance types that Karpenter is allowed to provision"
+  type = list(string)
+  default = ["t2.small", "t3.small", "t2.micro"]
+}
+
 ## EKS Addons 
 
 variable "pod_identity_addon_version" {

@@ -50,7 +50,7 @@ resource "aws_iam_policy" "karpenter_policy" {
         Sid    = "EKSClusterEndpointLookup"
         Effect = "Allow"
         Action = "eks:DescribeCluster"
-        Resource = "arn:aws:eks:${var.region}:${data.aws_caller_identity.current.account_id}:cluster/${var.cluster_name}"
+        Resource = "${aws_eks_cluster.eks-cluster.arn}"
       },
       {
         Sid      = "AllowScopedInstanceProfileCreationActions"
@@ -59,7 +59,7 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:RequestTag/kubernetes.io/cluster/${var.cluster_name}"       = "owned",
+            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
             "aws:RequestTag/topology.kubernetes.io/region"                   = "${var.region}"
           }
           StringLike = {
@@ -74,9 +74,9 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:ResourceTag/kubernetes.io/cluster/${var.cluster_name}"       = "owned",
+            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
             "aws:ResourceTag/topology.kubernetes.io/region"                   = "${var.region}",
-            "aws:RequestTag/kubernetes.io/cluster/${var.cluster_name}"        = "owned",
+            "aws:RequestTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"        = "owned",
             "aws:RequestTag/topology.kubernetes.io/region"                    = "${var.region}"
           }
           StringLike = {
@@ -96,7 +96,7 @@ resource "aws_iam_policy" "karpenter_policy" {
         Resource = "*"
         Condition = {
           StringEquals = {
-            "aws:ResourceTag/kubernetes.io/cluster/${var.cluster_name}"       = "owned",
+            "aws:ResourceTag/kubernetes.io/cluster/${aws_eks_cluster.eks-cluster.id}"       = "owned",
             "aws:ResourceTag/topology.kubernetes.io/region"                   = "${var.region}"
           }
           StringLike = {
@@ -176,6 +176,68 @@ resource "aws_iam_instance_profile" "karpenter_instance_profile" {
 }
 
 
+## Karpenter Nodepool and Nodeclass CRD
+
+
+resource "kubectl_manifest" "karpenter_nodepool" {
+  provider = "kubectl"
+  depends_on = [kubectl_manifest.karpenter_ec2nodeclass]
+
+  count           = var.enable_karpenter ? 1 : 0
+  yaml_body = <<YAML
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: default
+spec:
+  template:
+    metadata:
+      labels:
+        type: karpenter
+    spec:
+      requirements:
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["spot"]
+        - key: "node.kubernetes.io/instance-type"
+          operator: In
+          values: [${join(", ", formatlist("\"%s\"", var.karpenter_acceptable_instance_types))}]
+      nodeClassRef:
+        name: default
+  limits:
+    cpu: "1000"
+    memory: 1000Gi
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: 720h
+YAML
+}
+
+
+resource "kubectl_manifest" "karpenter_ec2nodeclass" {
+  depends_on = [helm_release.karpenter]
+  provider = "kubectl"
+  count           = var.enable_karpenter ? 1 : 0
+  yaml_body = <<YAML
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  amiFamily: AL2023 # Amazon Linux 2023
+  instanceProfile: "${aws_iam_instance_profile.karpenter_instance_profile.id}"
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "${aws_eks_cluster.eks-cluster.id}"
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "${aws_eks_cluster.eks-cluster.id}"
+YAML
+}
+
+###
+
+
 resource "helm_release" "karpenter" {
   count           = var.enable_karpenter ? 1 : 0
   provider = "helm"
@@ -193,7 +255,7 @@ resource "helm_release" "karpenter" {
 
   set {
     name  = "settings.clusterName"
-    value = var.cluster_name
+    value = aws_eks_cluster.eks-cluster.id
   }
   set {
     name = "settings.clusterEndpoint"
@@ -208,3 +270,4 @@ resource "helm_release" "karpenter" {
     value = var.karpenter_service_account_name
   }
 }
+
