@@ -179,6 +179,26 @@ variable "karpenter_acceptable_instance_types" {
   default     = ["t2.small", "t3.small", "t2.micro"]
 }
 
+
+## HPA 
+
+variable "enable_hpa"  {
+  description = "Feature switch for the Horizontal Pod Autoscaler"
+  type = bool 
+  default = true 
+}
+
+variable "hpa_namespace" {
+  description = "The namespae to deploy HPA resources in"
+  type = string 
+  default = "kube-system"
+}
+
+variable "metrics_server_version" {
+  description = "The version of the Metrics Server Helm Chart"
+  type        = string
+}
+
 ## EKS Addons 
 
 variable "pod_identity_addon_version" {
