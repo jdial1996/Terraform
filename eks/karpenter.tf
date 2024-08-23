@@ -182,6 +182,7 @@ resource "aws_iam_instance_profile" "karpenter_instance_profile" {
 resource "kubectl_manifest" "karpenter_nodepool" {
   provider   = "kubectl"
   depends_on = [kubectl_manifest.karpenter_ec2nodeclass]
+  ignore_fields = ["yaml_incluster"]
 
   count     = var.enable_karpenter ? 1 : 0
   yaml_body = <<YAML
@@ -216,6 +217,7 @@ YAML
 
 resource "kubectl_manifest" "karpenter_ec2nodeclass" {
   depends_on = [helm_release.karpenter]
+  ignore_fields = ["yaml_incluster"]
   provider   = "kubectl"
   count      = var.enable_karpenter ? 1 : 0
   yaml_body  = <<YAML
