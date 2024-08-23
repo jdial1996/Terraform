@@ -180,7 +180,7 @@ variable "karpenter_acceptable_instance_types" {
 }
 
 
-## HPA 
+## Metrics Server for HPA
 
 variable "enable_metrics_server" {
   description = "Feature switch for the Metrics Server"
