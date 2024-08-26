@@ -2,7 +2,8 @@ resource "helm_release" "metrics_server" {
   count    = var.enable_metrics_server ? 1 : 0
   provider = "helm"
   depends_on = [
-    aws_eks_cluster.eks-cluster
+    aws_eks_cluster.eks-cluster,
+    helm_release.karpenter
   ]
 
   name       = "metrics-server"

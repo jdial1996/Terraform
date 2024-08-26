@@ -291,7 +291,8 @@ resource "aws_eks_pod_identity_association" "lb_controller_pod_identity" {
 resource "helm_release" "aws_loadbalancer_controller" {
   count = var.create_lb_controller ? 1 : 0
   depends_on = [
-    aws_eks_cluster.eks-cluster
+    aws_eks_cluster.eks-cluster,
+    helm_release.karpenter
   ]
 
   name             = "aws-load-balancer-controller"

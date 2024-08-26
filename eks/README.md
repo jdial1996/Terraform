@@ -140,8 +140,10 @@ No modules.
 | [aws_subnet.private](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/subnet) | resource |
 | [aws_subnet.public](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/subnet) | resource |
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/resources/vpc) | resource |
+| [helm_release.argocd](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.karpenter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.metrics_server](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubectl_manifest.karpenter_ec2nodeclass](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [kubectl_manifest.karpenter_nodepool](https://registry.terraform.io/providers/gavinbunney/kubectl/latest/docs/resources/manifest) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.46.0/docs/data-sources/caller_identity) | data source |
@@ -154,6 +156,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_argocd_namespace"></a> [argocd\_namespace](#input\_argocd\_namespace) | The namespace to deploy the Argo CD in. | `string` | `"argocd"` | no |
+| <a name="input_argocd_version"></a> [argocd\_version](#input\_argocd\_version) | The version of the Argo CD Helm Chart | `string` | n/a | yes |
 | <a name="input_bootstrap_cluster_creator_admin_permissions"></a> [bootstrap\_cluster\_creator\_admin\_permissions](#input\_bootstrap\_cluster\_creator\_admin\_permissions) | Enable automatic grant of cluster-admin-creator to IAM entity that created the cluster | `bool` | n/a | yes |
 | <a name="input_cloudwatch_observability_addon_version"></a> [cloudwatch\_observability\_addon\_version](#input\_cloudwatch\_observability\_addon\_version) | The version of the EBS CSI Driver addon. | `string` | `null` | no |
 | <a name="input_cloudwatch_observability_namespace"></a> [cloudwatch\_observability\_namespace](#input\_cloudwatch\_observability\_namespace) | The namespace to deploy the Cloudwatch Agent in. | `string` | `"amazon-cloudwatch"` | no |
@@ -166,6 +170,7 @@ No modules.
 | <a name="input_create_read_only_user"></a> [create\_read\_only\_user](#input\_create\_read\_only\_user) | Create an EKS read only user. | `bool` | n/a | yes |
 | <a name="input_ebs_csi_driver_addon_version"></a> [ebs\_csi\_driver\_addon\_version](#input\_ebs\_csi\_driver\_addon\_version) | The version of the EBS CSI Driver addon. | `string` | `null` | no |
 | <a name="input_eks_fargate_profiles"></a> [eks\_fargate\_profiles](#input\_eks\_fargate\_profiles) | The eks cluster nodegroup configurations | `map(any)` | n/a | yes |
+| <a name="input_enable_argocd"></a> [enable\_argocd](#input\_enable\_argocd) | Feature switch for the Argo CD | `bool` | `true` | no |
 | <a name="input_enable_container_insights"></a> [enable\_container\_insights](#input\_enable\_container\_insights) | Feature switch for Container Insights | `bool` | n/a | yes |
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | Allocate public hostname for instances with IPv4 | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | Enables DNS resolution of hostnames within the VPC. | `bool` | `true` | no |
@@ -174,6 +179,7 @@ No modules.
 | <a name="input_enable_endpoint_private_access"></a> [enable\_endpoint\_private\_access](#input\_enable\_endpoint\_private\_access) | Enables DNS resolution of hostnames within the VPC. | `bool` | n/a | yes |
 | <a name="input_enable_karpenter"></a> [enable\_karpenter](#input\_enable\_karpenter) | Feature switch for Karpenter | `bool` | n/a | yes |
 | <a name="input_enable_managed_nodegroups"></a> [enable\_managed\_nodegroups](#input\_enable\_managed\_nodegroups) | Feature switch for managed nodegroups | `bool` | n/a | yes |
+| <a name="input_enable_metrics_server"></a> [enable\_metrics\_server](#input\_enable\_metrics\_server) | Feature switch for the Metrics Server | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The project environment. | `string` | n/a | yes |
 | <a name="input_karpenter_acceptable_instance_types"></a> [karpenter\_acceptable\_instance\_types](#input\_karpenter\_acceptable\_instance\_types) | The EC2 instance types that Karpenter is allowed to provision | `list(string)` | <pre>[<br>  "t2.small",<br>  "t3.small",<br>  "t2.micro"<br>]</pre> | no |
 | <a name="input_karpenter_namespace"></a> [karpenter\_namespace](#input\_karpenter\_namespace) | The namespace to deploy Karpenter in. | `string` | n/a | yes |
@@ -183,6 +189,8 @@ No modules.
 | <a name="input_lb_controller_namespace"></a> [lb\_controller\_namespace](#input\_lb\_controller\_namespace) | The namespace to deploy the AWS LB Controller into. | `string` | n/a | yes |
 | <a name="input_lb_controller_service_account_name"></a> [lb\_controller\_service\_account\_name](#input\_lb\_controller\_service\_account\_name) | The AWS LB Controller Kubernetes service account name. | `string` | n/a | yes |
 | <a name="input_lb_controller_version"></a> [lb\_controller\_version](#input\_lb\_controller\_version) | The Helm Chart version of the AWS LB Controller version to install. | `string` | n/a | yes |
+| <a name="input_metrics_server_namespace"></a> [metrics\_server\_namespace](#input\_metrics\_server\_namespace) | The namespace to deploy the Metrics Server in. | `string` | `"kube-system"` | no |
+| <a name="input_metrics_server_version"></a> [metrics\_server\_version](#input\_metrics\_server\_version) | The version of the Metrics Server Helm Chart | `string` | n/a | yes |
 | <a name="input_nodegroups"></a> [nodegroups](#input\_nodegroups) | The eks cluster nodegroup configurations | `map(any)` | n/a | yes |
 | <a name="input_pod_identity_addon_version"></a> [pod\_identity\_addon\_version](#input\_pod\_identity\_addon\_version) | The version of the EKS pod identity addon. | `string` | n/a | yes |
 | <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | The network CIDRs assigned to private subnets | `map(any)` | n/a | yes |
@@ -195,8 +203,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_eks_cluster_arn"></a> [eks\_cluster\_arn](#output\_eks\_cluster\_arn) | EKS Cluster ARN |
 | <a name="output_eks_cluster_endpoint"></a> [eks\_cluster\_endpoint](#output\_eks\_cluster\_endpoint) | Endpoint for EKS control plane. |
-| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS Cluster ARN |
+| <a name="output_eks_cluster_name"></a> [eks\_cluster\_name](#output\_eks\_cluster\_name) | EKS Cluster Name |
 | <a name="output_k8s_admin_role_arn"></a> [k8s\_admin\_role\_arn](#output\_k8s\_admin\_role\_arn) | Cluster admin role arn |
 | <a name="output_k8s_read_only_role_arn"></a> [k8s\_read\_only\_role\_arn](#output\_k8s\_read\_only\_role\_arn) | Cluster read-only role arn |
 | <a name="output_region"></a> [region](#output\_region) | AWS region |
