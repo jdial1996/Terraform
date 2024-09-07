@@ -3,7 +3,7 @@ resource "helm_release" "metrics_server" {
   provider = "helm"
   depends_on = [
     aws_eks_cluster.eks-cluster,
-    helm_release.karpenter, 
+    helm_release.karpenter,
     time_sleep.wait_30_seconds
   ]
 
