@@ -55,14 +55,13 @@ resource "aws_eks_cluster" "eks-cluster" {
 ## Addons 
 
 resource "aws_eks_addon" "pod-identity" {
-  depends_on    = [helm_release.karpenter]
   cluster_name  = aws_eks_cluster.eks-cluster.name
   addon_name    = "eks-pod-identity-agent"
   addon_version = var.pod_identity_addon_version
 }
 
 resource "aws_eks_addon" "ebs-csi-driver" {
-  depends_on    = [helm_release.karpenter]
+  depends_on    = [helm_release.karpenter, time_sleep.wait_30_seconds]
   count         = var.enable_ebs_csi_driver ? 1 : 0
   cluster_name  = aws_eks_cluster.eks-cluster.name
   addon_name    = "aws-ebs-csi-driver"
@@ -70,7 +69,7 @@ resource "aws_eks_addon" "ebs-csi-driver" {
 }
 
 resource "aws_eks_addon" "cloudwatch-observability" {
-  depends_on    = [helm_release.karpenter]
+  depends_on    = [helm_release.karpenter, time_sleep.wait_30_seconds]
   count         = var.enable_container_insights ? 1 : 0
   cluster_name  = aws_eks_cluster.eks-cluster.name
   addon_name    = "amazon-cloudwatch-observability"

@@ -292,7 +292,8 @@ resource "helm_release" "aws_loadbalancer_controller" {
   count = var.create_lb_controller ? 1 : 0
   depends_on = [
     aws_eks_cluster.eks-cluster,
-    helm_release.karpenter
+    helm_release.karpenter,
+    time_sleep.wait_30_seconds 
   ]
 
   name             = "aws-load-balancer-controller"

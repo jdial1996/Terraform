@@ -158,13 +158,8 @@ resource "aws_eks_pod_identity_association" "karpenter_pod_identity" {
 
 # Add tag to eks cluster primary security group
 
-# data "aws_security_group" "eks_primary_security_group" {
-#   id = aws_eks_cluster.eks-cluster.vpc_config[0].cluster_security_group_id
-# }
-
-
 resource "aws_ec2_tag" "karpenter_tag" {
-  count       = var.create_lb_controller ? 1 : 0
+  count       = var.enable_karpenter ? 1 : 0
   resource_id = aws_eks_cluster.eks-cluster.vpc_config[0].cluster_security_group_id
   key         = "karpenter.sh/discovery"
   value       = aws_eks_cluster.eks-cluster.id
@@ -244,7 +239,8 @@ resource "helm_release" "karpenter" {
   count    = var.enable_karpenter ? 1 : 0
   provider = "helm"
   depends_on = [
-    aws_eks_cluster.eks-cluster
+    aws_eks_cluster.eks-cluster,
+    aws_eks_addon.pod-identity
   ]
 
   name             = "karpenter"
@@ -273,3 +269,8 @@ resource "helm_release" "karpenter" {
   }
 }
 
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [helm_release.karpenter]
+
+  create_duration = "30s"
+}
