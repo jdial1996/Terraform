@@ -233,11 +233,10 @@ variable "monitoring_namespace" {
   default     = "monitoring"
 }
 
-variable "kube_prometheus_version_version" {
+variable "kube_prometheus_version" {
   description = "The version of the Kube Prometheus Stack Helm Chart"
   type        = string
 }
-
 
 ## EKS Addons 
 
