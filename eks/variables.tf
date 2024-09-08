@@ -219,6 +219,24 @@ variable "argocd_version" {
   type        = string
 }
 
+## Kube Prometheus Stack 
+
+variable "enable_monitoring" {
+  description = "Feature switch to enable the monitoring stack."
+  type        = bool
+  default     = true
+}
+
+variable "monitoring_namespace" {
+  description = "The namespace to deploy the monitoring stack in."
+  type        = string
+  default     = "monitoring"
+}
+
+variable "kube_prometheus_version" {
+  description = "The version of the Kube Prometheus Stack Helm Chart"
+  type        = string
+}
 
 ## EKS Addons 
 
